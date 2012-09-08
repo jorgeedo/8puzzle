@@ -1,13 +1,21 @@
 
 public class Board {
+	private final int[][] blocks;
+	
 	// construct a board from an N-by-N array of blocks
     // (where blocks[i][j] = block in row i, column j)
 	public Board(int[][] blocks){
+		this.blocks = new int[blocks.length][];
+		for (int i = 0; i < blocks.length; i++) {
+			this.blocks[i] = new int[blocks[i].length];
+			for (int j = 0; j < blocks[i].length; j++)
+				this.blocks[i][j] = blocks[i][j];
+		}
 	}
 		
 	// board dimension N
     public int dimension() {
-    	
+    	return blocks.length;
     }
     
  // number of blocks out of place
@@ -26,7 +34,7 @@ public class Board {
     	
     }
     
- // a board obtained by exchanging two adjacent blocks in the same row
+    // a board obtained by exchanging two adjacent blocks in the same row
     public Board twin() {
     	
     }
@@ -34,6 +42,8 @@ public class Board {
     // does this board equal y?
     public boolean equals(Object y) {
     	
+    	
+      	
     }
     
     // all neighboring boards
