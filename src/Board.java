@@ -1,26 +1,19 @@
 
 public class Board {
-	//private final int[][] blocks;
-	private final int[] blocks;
+	private final int[][] blocks;
 	private final int N;
-	private final int NxN;
 	
 	// construct a board from an N-by-N array of blocks
     // (where blocks[i][j] = block in row i, column j)
 	public Board(int[][] blocks){
-		int ii;
 		this.N = blocks.length;
-		this.NxN = this.N * this.N;
 		
-		this.blocks = new int[N*N];
-		
-		ii = 0;		
+		this.blocks = new int[N][];
+
 		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++){
-				//StdOut.println(blocks[i][j]);
-				this.blocks[ii++] = blocks[i][j];
-			}
-				//this.blocks[i][j] = blocks[i][j];
+			this.blocks[i] = new int[N];
+			for (int j = 0; j < N; j++)
+				this.blocks[i][j] = blocks[i][j];
 		}
 	}
 	
@@ -30,40 +23,66 @@ public class Board {
     }
     
  // number of blocks out of place
-    /*public int hamming() {
+    public int hamming() {
     	
-    }*/
+    	return 0;
+    	
+    }
     
  // sum of Manhattan distances between blocks and goal
-    /*public int manhattan() {
+    /*private int manhattan(int x1, int y1, int x2, int y2) {
+    	return Math.abs(x2 - x1) + Math.abs(y2 - y1);
+    }
+    
+    public int manhattan() {
     	
     }*/
     
  // is this board the goal board?
     public boolean isGoal() {
-    	int i = 0;
+    	int i = 0, j = 0;
+    	int ii = 1;
     	
-    	while (i < NxN && blocks[i] == i+1) i++;
+    	while (i < N) {
+    		j = 0;
+    		while (j < N) {
+    			StdOut.println("goal? " + i + " " + j + ": " + blocks[i][j] + " vs " + ii);
+    			if (blocks[i][j] != ii) return false;
+    			j++;
+    			ii++;
+    		}
+    		i++;
+    	}
     	
-    	StdOut.println("Break: " + i + " block " + blocks[i]);
-    	
-    	if (i >= NxN - 1) return true;
-    	else return false;    			
-    	
+    	if (i == N - 1 && j == N - 2) return true;
+    	else return false;    	
     }
     
-    private Board(int [] blocks, int N) {
+    private Board(int [][] blocks, int N) {
     	this.N = N;
-    	this.NxN = N*N;
     	
-    	this.blocks = new
-    	for (int i = 0; i < this.N; i++)
+    	this.blocks = new int[this.N][];
+    	for (int i = 0;i < this.N; i++) {
+    		this.blocks[i] = new int[this.N];
+    		for (int j = 0;j < this.N; j++)
+    			this.blocks[i][j] = blocks[i][j];
+    	} 
     		
+    }
+    
+    private void exch(int x1, int y1, int x2, int y2) {
+    	int aux = this.blocks[x1][y1];
+    	this.blocks[x1][y1] = this.blocks[x2][y2];
+    	this.blocks[x2][y2] = aux;
     }
     
     // a board obtained by exchanging two adjacent blocks in the same row
     public Board twin() {
-    	Board twinBoard = new Board();
+    	Board twinBoard = new Board(this.blocks, this.N);
+    	if (this.N > 2)
+    		twinBoard.exch(0, 0, 0, 1);
+    	
+    	return twinBoard;
     	
     }
     
@@ -73,11 +92,17 @@ public class Board {
     
     	if (this == y) return true;
     	
-    	int i = 0;
-    	while (i < NxN && blocks[i] == that.blocks[i]) i++;
+    	int i = 0, j = 0;
+    	while (i < N) {
+    		j = 0;
+    		while (j < N){
+    			j++;
+    			if (blocks[i][j] != that.blocks[i][j]) return false;
+    		}
+    		i++;
+    	}
 
-    	if (i == NxN) return true;
-    	else return false;
+    	return true;
       	
     }
     
@@ -91,10 +116,9 @@ public class Board {
     public String toString() {
     	StringBuilder s = new StringBuilder();
         s.append(N + "\n");
-        int ii = 0;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                s.append(String.format("%2d ", blocks[ii++]));
+                s.append(String.format("%2d ", blocks[i][j]));
             }
             s.append("\n");
         }
