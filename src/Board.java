@@ -1,3 +1,5 @@
+import java.util.Iterator;
+
 
 public class Board {
 	private final int[][] blocks;
@@ -24,29 +26,56 @@ public class Board {
     
  // number of blocks out of place
     public int hamming() {
+    	int ii = 1;
+    	int sum = 0;
+    	for (int i = 0;i < N;i++)
+    		for (int j = 0;j < N;j++)
+    			if (blocks[i][j] != ii++) sum++;
     	
-    	return 0;
+    	if (blocks[i][j] == 0) sum--;
+    	
+    	return sum;    	
     	
     }
     
  // sum of Manhattan distances between blocks and goal
-    /*private int manhattan(int x1, int y1, int x2, int y2) {
+    private int manhattan(int x1, int y1, int x2, int y2) {
+    	/*StdOut.println("manhattan between (" + x1 + "," + y1 + ") - ("
+    			+ x2 + "," + y2 +"): " + (Math.abs(x2 - x1) + Math.abs(y2 - y1)));*/
     	return Math.abs(x2 - x1) + Math.abs(y2 - y1);
     }
     
     public int manhattan() {
+    	int sum = 0;
+    	int goalX, goalY;
+    	int cell;
     	
-    }*/
+    	for (int i = 0; i < N; i++) {
+    		for (int j = 0; j < N; j++) {
+    			cell = blocks[i][j]-1;
+    			goalX = cell / N;
+    			goalY = cell % N; 
+    			//StdOut.println(blocks[i][j] + ": " + goalX + "," + goalY);
+    			if (cell != -1)
+    				sum += manhattan(i, j, goalX, goalY);
+    		}
+    	}
+    	
+    	return sum;
+    			
+    	
+    	
+    }
     
  // is this board the goal board?
     public boolean isGoal() {
     	int i = 0, j = 0;
     	int ii = 1;
+    	int NxN = N * N;
     	
     	while (i < N) {
     		j = 0;
-    		while (j < N) {
-    			StdOut.println("goal? " + i + " " + j + ": " + blocks[i][j] + " vs " + ii);
+    		while (j < N && ii < NxN) {
     			if (blocks[i][j] != ii) return false;
     			j++;
     			ii++;
@@ -54,7 +83,8 @@ public class Board {
     		i++;
     	}
     	
-    	if (i == N - 1 && j == N - 2) return true;
+    	//if (i == N && j == N - 1) return true;
+    	if (blocks[N-1][N-1] == 0) return true;
     	else return false;    	
     }
     
@@ -96,8 +126,8 @@ public class Board {
     	while (i < N) {
     		j = 0;
     		while (j < N){
-    			j++;
     			if (blocks[i][j] != that.blocks[i][j]) return false;
+    			j++;
     		}
     		i++;
     	}
@@ -107,10 +137,17 @@ public class Board {
     }
     
     // all neighboring boards
-    /*public Iterable<Board> neighbors() {
+    public Iterable<Board> neighbors() { return new NeighborIterator(); }
+    
+    private class NeighborIterator implements Iterable<Board>{
+
+		@Override
+		public Iterator<Board> iterator() {
+			// TODO Auto-generated method stub
+			return null;
+		}
     	
-    	
-    }*/
+    }
     
     // string representation of the board (in the output format specified below)
     public String toString() {
@@ -131,7 +168,7 @@ public class Board {
     	
     	Board myBoard = new Board(blocks);
     	
-    	int [][] blocks2 = {{1,2,3},{4,5,6},{8,7,0}};
+    	int [][] blocks2 = {{1,2,3},{4,5,7},{8,6,0}};
     	Board myBoard2 = new Board(blocks2);
     	
     	StdOut.println(myBoard);
@@ -141,6 +178,7 @@ public class Board {
     	StdOut.println(myBoard.equals(myBoard));
     	StdOut.println(myBoard.equals(myBoard2));
     	
+    	StdOut.println(myBoard2.manhattan());
     	
     	
     }
