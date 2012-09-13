@@ -32,7 +32,7 @@ public class Board {
     		for (int j = 0;j < N;j++)
     			if (blocks[i][j] != ii++) sum++;
     	
-    	if (blocks[i][j] == 0) sum--;
+    	if (blocks[N-1][N-1] == 0) sum--;
     	
     	return sum;    	
     	
@@ -143,21 +143,120 @@ public class Board {
 		@Override
 		public Iterator<Board> iterator() {
 			// TODO Auto-generated method stub
-			return null;
+			return new NeighborIterator();
 		}    	
 		
 		private class NeighborIterator implements Iterator<Board> {
+			
+			Node<Board> neighborList;
+			int numberOfNeighbors;
+			Node<Board> current;
+			
+			class Node<Item> {
+				
+				private Node<Item> _next;
+				private Item _item;
+				
+				public Node(Item item) {
+					_item = item;
+				}
+				
+				public Item getItem() {
+					return _item;
+				}
+				
+				public Node getNext() {
+					return _next;
+				}
+				
+				public void setNext(Node next) {
+					_next = next;
+				}
+			
+			}
+			
+			private void getCoordBlank(int[][] board, int N, int x, int y) {
+				for (int i=0; i<N; i++)
+					for (int j = 0; j < N; j++)
+						if (board[i][j] == 0){
+							y = i;
+							x = j;
+							return;
+						}
+			}
+			
+			private void exch(int[][] a, int i1, int j1, int i2, int j2) {
+				int aux;
+				aux = a[i1][j1];
+				a[i1][j1] = a[i2][j2];
+				a[i2][j2] = aux;
+			}
+			
+			public NeighborIterator() {
+				int blankX, blankY, aux;
+				Node auxNode;
+				
+				blankX = 0;
+				blankY = 0;
+				
+				getCoordBlank(Board.this.blocks, Board.this.N, blankX, blankY);
+				
+				StdOut.println("blankX: " + blankX + " blankY: " + blankY);
+				
+				// superior
+				if (blankY-1 >= 0){					
+					auxNode = neighborList;
+					neighborList = new Node(Board.this.blocks);
+					numberOfNeighbors++;
+					neighborList.setNext(auxNode);
+					exch(neighborList.getItem().blocks, blankY, blankX, blankY-1, blankX);				
+				}
+				
+				// inferior
+				if (blankY+1 < Board.this.N) {
+					auxNode = neighborList;				
+					neighborList = new Node(Board.this.blocks);
+					numberOfNeighbors++;
+					neighborList.setNext(auxNode);
+					exch(neighborList.getItem().blocks, blankY, blankX, blankY+1, blankX);
+				}
+				
+				// izquierda
+				if (blankX-1 >= 0) {
+					auxNode = neighborList;
+					neighborList = new Node(Board.this.blocks);
+					numberOfNeighbors++;
+					neighborList.setNext(auxNode);
+					exch(neighborList.getItem().blocks, blankY, blankX, blankY, blankX-1);
+				}
+				
+				// derecha
+				if (blankX+1 < Board.this.N) {
+					auxNode = neighborList;
+					neighborList = new Node(Board.this.blocks);
+					numberOfNeighbors++;
+					neighborList.setNext(auxNode);
+					exch(neighborList.getItem().blocks, blankY, blankX, blankY, blankX+1);					
+				}
+				
+				current = neighborList;
+				
+			}
 
 			@Override
 			public boolean hasNext() {
 				// TODO Auto-generated method stub
-				return false;
+				return (current != null);
 			}
 
 			@Override
 			public Board next() {
 				// TODO Auto-generated method stub
-				return null;
+				Node<Board> aux = current;
+				
+				current = current.getNext();
+				
+				return aux.getItem();
 			}
 
 			@Override
@@ -191,14 +290,20 @@ public class Board {
     	int [][] blocks2 = {{1,2,3},{4,5,7},{8,6,0}};
     	Board myBoard2 = new Board(blocks2);
     	
+    	//StdOut.println(myBoard);
+    	
+    	//StdOut.println(myBoard.isGoal());
+    	
+    	//StdOut.println(myBoard.equals(myBoard));
+    	//StdOut.println(myBoard.equals(myBoard2));
+    	
+    	//StdOut.println(myBoard2.manhattan());
+    	
     	StdOut.println(myBoard);
+    	StdOut.println("Neighborgs:");
     	
-    	StdOut.println(myBoard.isGoal());
-    	
-    	StdOut.println(myBoard.equals(myBoard));
-    	StdOut.println(myBoard.equals(myBoard2));
-    	
-    	StdOut.println(myBoard2.manhattan());
+    	for (Board board : myBoard.neighbors())
+    		StdOut.println(board);
     	
     	
     }
