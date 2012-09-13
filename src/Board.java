@@ -137,16 +137,36 @@ public class Board {
     }
     
     // all neighboring boards
-    public Iterable<Board> neighbors() { return new NeighborIterator(); }
+    public Iterable<Board> neighbors() { return new NeighborIterable(); }
     
-    private class NeighborIterator implements Iterable<Board>{
-
+    private class NeighborIterable implements Iterable<Board>{
 		@Override
 		public Iterator<Board> iterator() {
 			// TODO Auto-generated method stub
 			return null;
+		}    	
+		
+		private class NeighborIterator implements Iterator<Board> {
+
+			@Override
+			public boolean hasNext() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public Board next() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public void remove() {
+				// TODO Auto-generated method stub
+				
+			}
+			
 		}
-    	
     }
     
     // string representation of the board (in the output format specified below)
